@@ -1,0 +1,87 @@
+// TODO : read release and env from environment variable
+release = 2.16
+env = ignite-qa
+
+// will deploy component irrespective of current deployment version
+def Boolean force_deploy = false
+
+// pipeline notification via webex/email
+notification_type = "webex-teams"
+
+pipeline {
+	agent any
+	stages {
+		stage('Prepare Deployment') {
+			steps {
+				
+			}
+			post {
+				failure {
+					script { env.FAILURE_STAGE = 'Prepare Deployment' }
+				}
+			}
+		}
+		stage('Deploy'){
+			steps {
+				
+			}
+			post {
+				failure {
+					script { env.FAILURE_STAGE = 'Deploy' }
+				}
+			}
+		}
+		stage('Status check & Rollback'){
+			steps{
+								
+			}
+			post {
+				failure {
+					script { env.FAILURE_STAGE = 'Status check & Rollback' }
+				}
+			}
+		}
+		stage('Sanity Test'){
+			steps {
+				
+				build job: 'CICD_Dev', parameters: [string(name: 'SUITE_TAG', value: "${SUITE_TAG}")]
+			}
+			post {
+				failure {
+					script { env.FAILURE_STAGE = 'Sanity Test' }
+				}
+			}
+		}
+	}
+	post {
+		failure {
+			notifyFailure(RELEASE_NAME, CHART_VERSION, NOTIFICATION_TO)
+		}
+	}
+}
+
+
+def parse_manifest() {
+
+}
+
+def executePreDeploymentScripts(){
+
+}
+
+def deploy() {
+
+}
+
+def check_status() {
+    
+}
+
+def rollback() {
+
+}
+
+def notify() {
+
+}
+
